@@ -69,6 +69,7 @@ with st.sidebar:
         "Cost Benchmark ($/kg per cycle)", 
         min_value=0.1, max_value=30.0, value=0.5, step=0.1,
         help="Benchmark cost per recycling cycle (for normalization)"
+        key="cost_benchmark_input"
     )
     env_benchmark_per_cycle = st.number_input(
         "Environmental Benchmark (kg CO₂-eq/kg per cycle)", 
