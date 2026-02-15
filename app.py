@@ -77,7 +77,7 @@ with st.sidebar:
     )
     integrity_benchmark_per_cycle = st.number_input(
         "Integrity Benchmark (loss per cycle)", 
-        min_value=0.01, max_value=1, value=0.1, step=0.01,
+        min_value=0.01, max_value=0.8, value=0.1, step=0.01,
         help="Benchmark integrity loss per recycling cycle"
     )
 
