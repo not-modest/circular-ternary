@@ -411,7 +411,12 @@ class CircularityAssessment:
                     environmental=cycle_env,
                     integrity_loss=cycle_integrity
                 )
-                normalized_degraded = self.benchmarks.normalize(degraded_burdens_for_triangle)
+                scaled_burdens = BurdenMetrics(
+                    cost=degraded_burdens_for_triangle.cost,
+                    environmental=degraded_burdens_for_triangle.environmental,
+                    integrity_loss=degraded_burdens_for_triangle.integrity_loss * 10
+                )
+                normalized_degraded = self.benchmarks.normalize(scaled_burdens)
 
                 triangle = TernaryGeometry.create_scaled_triangle(
                     normalized_degraded,
