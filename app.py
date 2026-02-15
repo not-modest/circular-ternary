@@ -67,7 +67,7 @@ with st.sidebar:
     st.subheader("Benchmarks (Per-Cycle Basis)")
     cost_benchmark_per_cycle = st.number_input(
         "Cost Benchmark ($/kg per cycle)", 
-        min_value=0.1, max_value=5.0, value=0.5, step=0.1,
+        min_value=0.1, max_value=30.0, value=0.5, step=0.1,
         help="Benchmark cost per recycling cycle (for normalization)"
     )
     env_benchmark_per_cycle = st.number_input(
@@ -77,7 +77,7 @@ with st.sidebar:
     )
     integrity_benchmark_per_cycle = st.number_input(
         "Integrity Benchmark (loss per cycle)", 
-        min_value=0.01, max_value=0.5, value=0.1, step=0.01,
+        min_value=0.01, max_value=1, value=0.1, step=0.01,
         help="Benchmark integrity loss per recycling cycle"
     )
 
