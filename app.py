@@ -64,23 +64,21 @@ st.markdown("---")
 with st.sidebar:
     st.header("🌍 Global Settings")
 
-    st.subheader("Benchmarks (Normalization)")
-    cost_max = st.number_input(
-        "Cost Max ($/kg)",
-        min_value=1.0,
-        max_value=20.0,
-        value=7.0,
-        step=0.5,
-        help="Maximum cost benchmark for normalization"
+    st.subheader("Benchmarks (Per-Cycle Basis)")
+    cost_benchmark_per_cycle = st.number_input(
+        "Cost Benchmark ($/kg per cycle)", 
+        min_value=0.1, max_value=5.0, value=0.5, step=0.1,
+        help="Benchmark cost per recycling cycle (for normalization)"
     )
-
-    env_max = st.number_input(
-        "Environmental Max (kg CO₂-eq/kg)",
-        min_value=1.0,
-        max_value=50.0,
-        value=10.0,
-        step=1.0,
-        help="Maximum environmental impact benchmark"
+    env_benchmark_per_cycle = st.number_input(
+        "Environmental Benchmark (kg CO₂-eq/kg per cycle)", 
+        min_value=0.1, max_value=10.0, value=1.0, step=0.1,
+        help="Benchmark environmental impact per recycling cycle"
+    )
+    integrity_benchmark_per_cycle = st.number_input(
+        "Integrity Benchmark (loss per cycle)", 
+        min_value=0.01, max_value=0.5, value=0.1, step=0.01,
+        help="Benchmark integrity loss per recycling cycle"
     )
 
     st.markdown("---")
@@ -279,7 +277,12 @@ st.markdown("---")
 st.header("🔬 Pathway Analysis")
 
 # Create assessment object
-benchmarks = Benchmarks(cost_max=cost_max, environmental_max=env_max)
+
+benchmarks = Benchmarks(
+    cost_max=cost_benchmark_per_cycle, 
+    environmental_max=env_benchmark_per_cycle,
+    integrity_loss_max=integrity_benchmark_per_cycle
+)
 
 if enable_constraints:
     constraints = Constraints(
