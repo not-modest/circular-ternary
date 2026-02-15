@@ -381,17 +381,32 @@ class CircularityAssessment:
                 stage_cost = current_cost + (cycle_cost * effective_mass)
                 stage_env = current_env + (cycle_env * effective_mass)
 
-                point_burdens = BurdenMetrics(
-                    cost=cycle_cost,
-                    environmental=cycle_env,
-                    integrity_loss=cycle_integrity
+                            # Use cumulative burdens for trajectory points (same as triangles)
+                cumulative_point_burdens = BurdenMetrics(
+                    cost=stage_cost,
+                    environmental=stage_env,
+                    integrity_loss=stage_integrity
                 )
-
+                
+                # Calculate dynamic benchmarks
+                actual_cycles_completed = total_cycles
+                dynamic_cost_max = self.benchmarks.cost_max * actual_cycles_completed
+                dynamic_env_max = self.benchmarks.environmental_max * actual_cycles_completed
+                dynamic_integrity_max = self.benchmarks.integrity_loss_max * actual_cycles_completed
+                
+                # Create temporary benchmark object with dynamic values
+                dynamic_benchmarks = Benchmarks(
+                    cost_max=dynamic_cost_max,
+                    environmental_max=dynamic_env_max,
+                    integrity_loss_max=dynamic_integrity_max
+                )
+                
                 point = TernaryGeometry.calculate_trajectory_point(
-                    point_burdens,
-                    self.benchmarks,
+                    cumulative_point_burdens,
+                    dynamic_benchmarks,
                     z_height=stage_time
                 )
+
 
                 point['stage_name'] = f"{stage.name} (Cycle {cycle_num + 1})" if stage.cycles > 1 else stage.name
                 point['cycle_number'] = cycle_num + 1
