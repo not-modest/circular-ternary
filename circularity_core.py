@@ -180,20 +180,19 @@ class TernaryGeometry:
         """Calculate the trajectory point within the ternary space."""
         normalized = benchmarks.normalize(burdens)
     
-        # Use ONLY normalized values to position the point
-        # NOT the raw burden values for ternary ratios
+        # Base vertices scaled by their respective normalized burdens
+        cost_vertex = np.array([0.0, 0.0]) * normalized[0]
+        env_vertex = np.array([1.0, 0.0]) * normalized[1]
+        integrity_vertex = np.array([0.5, np.sqrt(3)/2]) * normalized[2]
+    
+        # Calculate ternary weights from RAW burdens (for positioning)
         a_rel, b_rel, c_rel = TernaryGeometry.normalize_ternary(
-            normalized[0],  # Use normalized cost
-            normalized[1],  # Use normalized env
-            normalized[2]   # Use normalized integrity
+            burdens.cost,
+            burdens.environmental,
+            burdens.integrity_loss * 10
         )
     
-        # Base vertices of ternary triangle
-        cost_vertex = np.array([0.0, 0.0])
-        env_vertex = np.array([1.0, 0.0])
-        integrity_vertex = np.array([0.5, np.sqrt(3)/2])
-    
-        # Calculate position as weighted average of vertices
+        # Position is weighted average of scaled vertices
         x = (a_rel * cost_vertex[0] + 
              b_rel * env_vertex[0] + 
              c_rel * integrity_vertex[0])
@@ -212,7 +211,6 @@ class TernaryGeometry:
             'total_burden': total_burden,
             'burden_magnitude': 1 / (total_burden + 0.001)
         }
-
     
 
 
