@@ -413,7 +413,7 @@ class CircularityAssessment:
                 )
                 
                 normalized_degraded = self.benchmarks.normalize(degraded_burdens_for_triangle)
-                normalized_degraded[2] = normalized_degraded[2] * 10
+                
                 triangle = TernaryGeometry.create_scaled_triangle(
                     normalized_degraded,
                     z_height=stage_time
