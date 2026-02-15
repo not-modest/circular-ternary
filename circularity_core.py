@@ -387,12 +387,12 @@ class CircularityAssessment:
                     environmental=stage_env,
                     integrity_loss=stage_integrity
                 )
-                
                 # Calculate dynamic benchmarks
                 actual_cycles_completed = total_cycles
                 dynamic_cost_max = self.benchmarks.cost_max * actual_cycles_completed
                 dynamic_env_max = self.benchmarks.environmental_max * actual_cycles_completed
-                dynamic_integrity_max = self.benchmarks.integrity_loss_max * actual_cycles_completed
+                # Integrity is capped at 1.0 (can't exceed 100% loss)
+                dynamic_integrity_max = min(1.0, self.benchmarks.integrity_loss_max * actual_cycles_completed)
                 
                 # Create temporary benchmark object with dynamic values
                 dynamic_benchmarks = Benchmarks(
@@ -423,11 +423,11 @@ class CircularityAssessment:
 
                 # Calculate dynamic benchmarks based on actual cycles completed
                 actual_cycles_completed = total_cycles
-                
-                # Create dynamic benchmarks that scale with cycles
+
                 dynamic_cost_max = self.benchmarks.cost_max * actual_cycles_completed
                 dynamic_env_max = self.benchmarks.environmental_max * actual_cycles_completed
-                dynamic_integrity_max = self.benchmarks.integrity_loss_max * actual_cycles_completed
+                # Integrity is capped at 1.0 (can't exceed 100% loss)
+                dynamic_integrity_max = min(1.0, self.benchmarks.integrity_loss_max * actual_cycles_completed)
                 
                 # Use cumulative burdens (not per-cycle)
                 cumulative_burdens_for_triangle = BurdenMetrics(
