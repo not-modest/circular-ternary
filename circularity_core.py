@@ -382,7 +382,7 @@ class CircularityAssessment:
                 stage_env = current_env + (cycle_env * effective_mass)
 
                             # Use cumulative burdens for trajectory points (same as triangles)
-                cumulative_point_burdens = BurdenMetrics(
+                point_burdens = BurdenMetrics(
                     cost=stage_cost,
                     environmental=stage_env,
                     integrity_loss=stage_integrity
@@ -402,7 +402,7 @@ class CircularityAssessment:
                 )
                 
                 point = TernaryGeometry.calculate_trajectory_point(
-                    cumulative_point_burdens,
+                    point_burdens,
                     dynamic_benchmarks,
                     z_height=stage_time
                 )
