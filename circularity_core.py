@@ -170,7 +170,7 @@ class TernaryGeometry:
         z = np.full_like(x, z_height)
 
         return {'x': x, 'y': y, 'z': z}
-        
+
     @staticmethod
     def calculate_trajectory_point(
         burdens: BurdenMetrics,
@@ -180,26 +180,29 @@ class TernaryGeometry:
         """Calculate the trajectory point within the ternary space."""
         normalized = benchmarks.normalize(burdens)
     
-        # Base vertices scaled by their respective normalized burdens
-        cost_vertex = np.array([0.0, 0.0]) * normalized[0]
-        env_vertex = np.array([1.0, 0.0]) * normalized[1]
-        integrity_vertex = np.array([0.5, np.sqrt(3)/2]) * normalized[2]
-    
-        # Calculate ternary weights from RAW burdens (for positioning)
+        # Calculate ternary ratios from RAW burdens
         a_rel, b_rel, c_rel = TernaryGeometry.normalize_ternary(
             burdens.cost,
             burdens.environmental,
             burdens.integrity_loss * 10
         )
     
-        # Position is weighted average of scaled vertices
-        x = (a_rel * cost_vertex[0] + 
-             b_rel * env_vertex[0] + 
-             c_rel * integrity_vertex[0])
-    
-        y = (a_rel * cost_vertex[1] + 
-             b_rel * env_vertex[1] + 
-             c_rel * integrity_vertex[1])
+        # Scale the ENTIRE ternary space by normalized burdens
+        # Then position the point within that scaled space
+        
+        # Base vertex positions (unscaled)
+        cost_vertex_base = np.array([0.0, 0.0])
+        env_vertex_base = np.array([1.0, 0.0])
+        integrity_vertex_base = np.array([0.5, np.sqrt(3)/2])
+        
+        # Scale vertices independently
+        cost_vertex = cost_vertex_base * normalized[0]
+        env_vertex = env_vertex_base * normalized[1]
+        integrity_vertex = integrity_vertex_base * normalized[2]
+        
+        # Weighted position within scaled triangle
+        x = a_rel * cost_vertex[0] + b_rel * env_vertex[0] + c_rel * integrity_vertex[0]
+        y = a_rel * cost_vertex[1] + b_rel * env_vertex[1] + c_rel * integrity_vertex[1]
     
         total_burden = burdens.cost + burdens.environmental + burdens.integrity_loss
     
@@ -211,8 +214,6 @@ class TernaryGeometry:
             'total_burden': total_burden,
             'burden_magnitude': 1 / (total_burden + 0.001)
         }
-    
-
 
 # ============================================================================
 # INTEGRITY MODEL
