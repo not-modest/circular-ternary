@@ -183,7 +183,7 @@ class TernaryGeometry:
         a_rel, b_rel, c_rel = TernaryGeometry.normalize_ternary(
             burdens.cost,
             burdens.environmental,
-            burdens.integrity_loss
+            burdens.integrity_loss*10
         )
 
         cost_vertex_scaled = np.array([0.0, 0.0]) * normalized[0]
