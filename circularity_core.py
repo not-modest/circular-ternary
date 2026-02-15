@@ -406,17 +406,35 @@ class CircularityAssessment:
                 point['is_recyclable'] = integrity_data['is_recyclable']
                 trajectory_coords.append(point)
 
-                degraded_burdens_for_triangle = BurdenMetrics(
-                    cost=cycle_cost,
-                    environmental=cycle_env,
-                    integrity_loss=cycle_integrity
+                # Calculate dynamic benchmarks based on actual cycles completed
+                actual_cycles_completed = total_cycles
+                
+                # Create dynamic benchmarks that scale with cycles
+                dynamic_cost_max = self.benchmarks.cost_max * actual_cycles_completed
+                dynamic_env_max = self.benchmarks.environmental_max * actual_cycles_completed
+                dynamic_integrity_max = self.benchmarks.integrity_loss_max * actual_cycles_completed
+                
+                # Use cumulative burdens (not per-cycle)
+                cumulative_burdens_for_triangle = BurdenMetrics(
+                    cost=stage_cost,  # Cumulative cost
+                    environmental=stage_env,  # Cumulative environmental
+                    integrity_loss=stage_integrity  # Cumulative integrity
                 )
-                normalized_degraded = self.benchmarks.normalize(degraded_burdens_for_triangle)
-
+                
+                # Normalize against dynamic maxima
+                normalized_degraded = np.array([
+                    cumulative_burdens_for_triangle.cost / dynamic_cost_max,
+                    cumulative_burdens_for_triangle.environmental / dynamic_env_max,
+                    cumulative_burdens_for_triangle.integrity_loss / dynamic_integrity_max
+                ])
+                
                 triangle = TernaryGeometry.create_scaled_triangle(
                     normalized_degraded,
                     z_height=stage_time
                 )
+
+
+    
                 triangle['stage_name'] = point['stage_name']
                 triangle_coords.append(triangle)
 
